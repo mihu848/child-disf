@@ -24,7 +24,7 @@ def check_tokens(t1, t2): #t1 and t2 are names of files to read from
             return 
     print("Token Contents All Match!")
     return
-
+#return array index based on boundary marking type
 def b_index(f):
     if (f == '/'):
         return 0 
@@ -40,6 +40,7 @@ def b_index(f):
         return 5
     return -1
 
+#generate confusion matrix
 def kappa_arr(t1,t2):
     first = pd.read_csv(t1, sep='\t')
     sec = pd.read_csv(t2, sep='\t')
@@ -89,14 +90,6 @@ def kappa_arr(t1,t2):
             i=b_index(f)
             j=b_index(s)
             k[i][j]=k[i][j]+1
-                
-            
-            
-        
-    #cases with underscores
-    #cases matching
-    #array position
-    
     return k;
 
     
