@@ -58,7 +58,7 @@ def gender_filler(t1):
     print("Male Filler Rate: " + str(m_fill/males) + " across " + str(males)+ " subjects")
     print("Female Filler Rate: " + str(f_fill/females) + " across " + str(females)+ " subjects")
 
-#exports csv with repair data
+#exports csv with disf/reparandum data
 def disf_rate(t1, name):
     first = pd.read_csv(t1, sep='\t')
     x=0
@@ -93,7 +93,7 @@ def disf_rate(t1, name):
     outfile = name + ".tsv"
     df.to_csv(outfile, sep="\t", index=False)
 
-#reads in master tsv, generates repair stats by gender
+#reads in master tsv, generates disf/reparandum stats by gender
 def gender_disf(t1):
     df = pd.read_csv(t1, sep='\t')
     males = 0
@@ -109,3 +109,6 @@ def gender_disf(t1):
             females+=1
     print("Male Disfluency Rate: " + str(m_disf/males) + " across " + str(males)+ " subjects")
     print("Female Disfluency Rate: " + str(f_disf/females) + " across " + str(females)+ " subjects")
+
+#compare reparandum length to repair length
+#percentage involved in repair
