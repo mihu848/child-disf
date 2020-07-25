@@ -24,6 +24,7 @@ def check_tokens(t1, t2): #t1 and t2 are names of files to read from
             return 
     print("Token Contents All Match!")
     return
+
 #return array index based on boundary marking type
 def b_index(f):
     if (f == '/'):
