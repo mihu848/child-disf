@@ -66,7 +66,6 @@ def disf_rate(t1, name):
     disfct = []
     totct = []
     rate = []
-    #for x in range(len(first)):
     while(x<len(first)):
         key = first.loc[x, "filename"]
         count = 0
@@ -111,4 +110,38 @@ def gender_disf(t1):
     print("Female Disfluency Rate: " + str(f_disf/females) + " across " + str(females)+ " subjects")
 
 #compare reparandum length to repair length
-#percentage involved in repair
+
+
+#percentage of tokens involved in repair
+def rep_rate(t1, name):
+    first = pd.read_csv(t1, sep='\t')
+    x=0
+    tags = []
+    disfct = []
+    totct = []
+    rate = []
+    while(x<len(first)):
+        key = first.loc[x, "filename"]
+        count = 0
+        tot = 0
+        while(x<len(first) and first.loc[x, "filename"]==key):
+            f=first.loc[x, "level"]
+            if(f>=1):
+                count+=1
+                tot+=1
+            else:
+                tot+=1
+            x+=1
+        print(key)
+        tags.append(key)
+        print("Repair Tokens: " + str(count))
+        disfct.append(count)
+        print("Total Tokens: " + str(tot))
+        totct.append(tot)
+        print("Repair rate: " + str(count/tot*100)+"%")
+        rate.append(count/tot)
+        x+=1
+    df = pd.DataFrame(list(zip(tags,disfct,rate,totct)),
+                      columns = ["filename", "repairsegs", "reprate", "tokens"])
+    outfile = name + ".tsv"
+    df.to_csv(outfile, sep="\t", index=False)
