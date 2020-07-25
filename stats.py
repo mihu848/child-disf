@@ -3,8 +3,6 @@ import sys, argparse, os
 import glob
 import pandas as pd 
 import numpy as np
-import csv
-from collections import Counter
 
 #exports csv with filler data
 def filler_rate(t1, name):
