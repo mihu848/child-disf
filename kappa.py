@@ -86,13 +86,9 @@ def kappa_arr(t1,t2):
                 i=b_index(seg1)
                 j=b_index(seg2)
                 k[i][j]=k[i][j]+1
-                f=f[v+1]
+                f=f[u+1]
                 s=s[v+1]      
             i=b_index(f)
             j=b_index(s)
             k[i][j]=k[i][j]+1
     return k;
-
-    
-    
-    
