@@ -40,4 +40,20 @@ def filler_rate(t1, name):
                       columns = ["filename", "fillers", "tokens", "rate"])
     outfile = name + ".tsv"
     df.to_csv(outfile, sep="\t", index=False)
-    
+
+#reads in tsv, generates filler statistics by gender
+def gender_filler(t1):
+    df = pd.read_csv(t1, sep='\t')
+    males = 0
+    females = 0
+    m_fill = 0
+    f_fill = 0
+    for x in range(len(df)):
+        if(df.loc[x, "gender"]=="M"):
+            m_fill+=df.loc[x, "fillrate"]
+            males+=1
+        else:
+            f_fill+=df.loc[x, "fillrate"]
+            females+=1
+    print("Male Filler Rate: " + str(m_fill/males) + " across " + str(males)+ " subjects")
+    print("Female Filler Rate: " + str(f_fill/females) + " across " + str(females)+ " subjects")
