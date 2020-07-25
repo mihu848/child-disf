@@ -92,3 +92,7 @@ def kappa_arr(t1,t2):
             j=b_index(s)
             k[i][j]=k[i][j]+1
     return k;
+
+    
+    
+    
