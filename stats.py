@@ -7,7 +7,7 @@ import csv
 from collections import Counter
 
 #exports csv with filler data
-def filler_rate(t1):
+def filler_rate(t1, name):
     first = pd.read_csv(t1, sep='\t')
     x=0
     tags = []
@@ -38,5 +38,6 @@ def filler_rate(t1):
         x+=1
     df = pd.DataFrame(list(zip(tags,fillct,totct,rate)),
                       columns = ["filename", "fillers", "tokens", "rate"])
-    df.to_csv("fillerfile.tsv", sep="\t", index=False)
+    outfile = name + ".tsv"
+    df.to_csv(outfile, sep="\t", index=False)
     
