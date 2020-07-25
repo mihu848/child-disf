@@ -6,6 +6,7 @@ import numpy as np
 import csv
 from collections import Counter
 
+#exports csv with filler data
 def filler_rate(t1):
     first = pd.read_csv(t1, sep='\t')
     x=0
