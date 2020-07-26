@@ -17,7 +17,7 @@ def check_tokens(t1, t2): #t1 and t2 are names of files to read from
         print("Number of tokens are the same.")
     r = max(f_rows, s_rows)
     for x in range(r):
-        if(first.loc[x, "token"]!=sec.loc[x,"token"]):
+         if(first.loc[x, "token"]!=sec.loc[x,"token"]):
             print("Token error at Position: "+str(x))
             print("Transcription: " + first.loc[x,"filename"])
             print('First file says: "'+first.loc[x, "token"]+'" and second file says: "'+sec.loc[x,"token"]+'"')
@@ -25,7 +25,7 @@ def check_tokens(t1, t2): #t1 and t2 are names of files to read from
     print("Token Contents All Match!")
     return
 
-#return array index based on boundary marking type
+#return confusion matrix array index based on boundary marking type
 def b_index(f):
     if (f == '/'):
         return 0 
