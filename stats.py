@@ -39,22 +39,6 @@ def filler_rate(t1, name):
     outfile = name + ".tsv"
     df.to_csv(outfile, sep="\t", index=False)
 
-#reads in tsv, generates filler statistics by gender
-def gender_filler(t1):
-    df = pd.read_csv(t1, sep='\t')
-    males = 0
-    females = 0
-    m_fill = 0
-    f_fill = 0
-    for x in range(len(df)):
-        if(df.loc[x, "gender"]=="M"):
-            m_fill+=df.loc[x, "fillrate"]
-            males+=1
-        else:
-            f_fill+=df.loc[x, "fillrate"]
-            females+=1
-    print("Male Filler Rate: " + str(m_fill/males) + " across " + str(males)+ " subjects")
-    print("Female Filler Rate: " + str(f_fill/females) + " across " + str(females)+ " subjects")
 
 #exports csv with disf/reparandum data
 def disf_rate(t1, name):
@@ -90,22 +74,6 @@ def disf_rate(t1, name):
     outfile = name + ".tsv"
     df.to_csv(outfile, sep="\t", index=False)
 
-#reads in master tsv, generates disf/reparandum stats by gender
-def gender_disf(t1):
-    df = pd.read_csv(t1, sep='\t')
-    males = 0
-    females = 0
-    m_disf = 0
-    f_disf = 0
-    for x in range(len(df)):
-        if(df.loc[x, "gender"]=="M"):
-            m_disf+=df.loc[x, "disfrate"]
-            males+=1
-        else:
-            f_disf+=df.loc[x, "disfrate"]
-            females+=1
-    print("Male Disfluency Rate: " + str(m_disf/males) + " across " + str(males)+ " subjects")
-    print("Female Disfluency Rate: " + str(f_disf/females) + " across " + str(females)+ " subjects")
 
 #compare reparandum length to repair length
 
@@ -144,6 +112,23 @@ def rep_rate(t1, name):
     outfile = name + ".tsv"
     df.to_csv(outfile, sep="\t", index=False)
 
+#reads in master tsv, generates data column averaged by gender
+def gender_stat(t1,col):
+    df = pd.read_csv(t1, sep='\t')
+    males = 0
+    females = 0
+    m_stat = 0
+    f_stat = 0
+    for x in range(len(df)):
+        if(df.loc[x, "gender"]=="M"):
+            m_stat+=df.loc[x, col]
+            males+=1
+        else:
+            f_stat+=df.loc[x, col]
+            females+=1
+    print("Male " + col +": "+ str(m_stat/males) + " across " + str(males)+ " subjects")
+    print("Female " + col +": " + str(f_stat/females) + " across " + str(females)+ " subjects")
+    
 #graph two data columns against each other    
 def graph(t1,a1,a2,x_label="x",y_label="y"):
     if(x_label == "x"):
