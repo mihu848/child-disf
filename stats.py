@@ -3,6 +3,7 @@ import sys, argparse, os
 import glob
 import pandas as pd 
 import numpy as np
+import matplotlib.pyplot as plt
 
 #exports csv with filler data
 def filler_rate(t1, name):
@@ -143,3 +144,18 @@ def rep_rate(t1, name):
                       columns = ["filename", "repairsegs", "reprate", "tokens"])
     outfile = name + ".tsv"
     df.to_csv(outfile, sep="\t", index=False)
+
+#graph two data columns against each other    
+def graph(t1,a1,a2,x_label="x",y_label="y"):
+    if(x_label == "x"):
+        x_label=a1
+    if(y_label == "y"):
+        y_label=a2  
+    df= pd.read_csv(t1, sep='\t')
+    x = df.loc[:,a1]
+    y = df.loc[:,a2]
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(y_label+" vs. "+x_label)
+    plt.plot(x, y, 'o', color='black')
+    
