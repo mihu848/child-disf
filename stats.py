@@ -3,6 +3,8 @@ import glob
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import stats
+import minedit
 
 #exports csv with filler data
 def filler_rate(t1, name):
@@ -141,5 +143,19 @@ def graph(t1,a1,a2,x_label="x",y_label="y"):
     plt.xlabel(x_label)
     plt.ylabel(y_label)
     plt.title(y_label+" vs. "+x_label)
+    slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+    predict_y = intercept + slope * x
+  #  p=np.polyfit(x,y,2)
+  #  f=np.poly1d(p)
+ #   plt.plot(x,f(x), color="blue")
+    plt.plot(x,predict_y, color = "red")
     plt.plot(x, y, 'o', color='black')
+    print("Linear R Value: " + str(r_value))
     
+#generate per ID statistics on minimum edit distance between reparandums and repairs
+def min_edit(t1):
+    df = pd.read_csv(t1, sep='\t')
+    
+    x="Asd"
+    y="Asdsd"
+    return minedit.WagnerFischer(x,y).cost
