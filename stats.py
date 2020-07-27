@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 import minedit
+import ntpath
 
 #exports csv with filler data
 def filler_rate(t1, name):
@@ -111,8 +112,18 @@ def rep_rate(t1, name):
     outfile = name + ".tsv"
     df.to_csv(outfile, sep="\t", index=False)
 
-#reads in master tsv, generates data column averaged by gender
-def gender_stat(t1,col):
+#reads in master tsv, generates averaged data
+def avg(t1,col):
+    df = pd.read_csv(t1, sep='\t')
+    subj = 0
+    stat = 0
+    for x in range(len(df)):
+            stat+=df.loc[x, col]
+            subj+=1
+    print("Child " + col +": "+ str(stat/subj) + " across " + str(subj)+ " subjects")
+
+#reads in master tsv, generates averaged data by gender
+def gender_avg(t1,col):
     df = pd.read_csv(t1, sep='\t')
     males = 0
     females = 0
@@ -300,6 +311,6 @@ def add_demo(t1,master):
             y+=1
     df["age"]=ages
     df["gender"]=gender
-           
+    df.to_csv(ntpath.basename(t1),sep='\t',index=False)
            
         
