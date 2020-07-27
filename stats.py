@@ -231,8 +231,7 @@ def min_edit(t1):
                 tok.append(x)
                 x+=1
         else:
-            x+=1
-            
+            x+=1            
     fin = pd.DataFrame(list(zip(tags,disf,rep,med_v,fs,tok)),
                        columns = ["filename", "reparandum", "repair", "minedit","false start","token number"])
     fin.to_csv("minimumedit.tsv", sep="\t", index=False)
@@ -268,7 +267,6 @@ def med_rates(t1, name):
                     min_tot+=1
                     no_reps+=1
             x+=1
-            
         print(key)
         tags.append(key)
         print("False Starts: " + str(fs))
