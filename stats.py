@@ -282,5 +282,24 @@ def med_rates(t1, name):
     df.to_csv(outfile, sep="\t", index=False)        
             
             
-            
-            
+#add age/gender information from master csv          
+def add_demo(t1,master):
+    df = pd.read_csv(t1, sep='\t')
+    mas = pd.read_csv(master,sep='\t')
+    ages = []
+    gender = []
+    x=0
+    y=0
+    while (x < len(df) and y < len(mas)):
+        if(mas.loc[y,"filename"]==df.loc[x,"filename"]):
+            ages.append(mas.loc[y,"age"])
+            gender.append(mas.loc[y,"gender"])
+            x+=1
+            y+=1
+        else:
+            y+=1
+    df["age"]=ages
+    df["gender"]=gender
+           
+           
+        
