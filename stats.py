@@ -155,21 +155,21 @@ def parse_repar(t1, x):
     df=pd.read_csv(t1, sep='\t')
     tup = ["", x]
     while(df.loc[tup[1],"boundary"] != "+" and df.loc[tup[1],"boundary"] != "+_/" and df.loc[tup[1],"boundary"] != "+_//"):
-        if(df.loc[tup[1],"token"]!="<inaudible>"):
+        if(df.loc[tup[1],"token"]!="<inaudible>" and df.loc[tup[1],"filler"]==0):
             tup[0]+=df.loc[tup[1],"token"]+" "
         tup[1]+=1
-    if(df.loc[tup[1],"token"]!="<inaudible>"):
+    if(df.loc[tup[1],"token"]!="<inaudible>" and df.loc[tup[1],"filler"]==0):
         tup[0] += df.loc[tup[1],"token"]
     return tup #return reparandum and index number
 
 def parse_repair(t1,x):
     df=pd.read_csv(t1, sep='\t')
     tup = ["", x]
-    while(df.loc[tup[1]+1,"level"] != 0):
-        if(df.loc[tup[1],"token"]!="<inaudible>"):
+    while(df.loc[tup[1]+1,"level"] != 0 and df.loc[tup[1]+1,"disf"]==0):
+        if(df.loc[tup[1],"token"]!="<inaudible>" and df.loc[tup[1],"filler"]==0):
             tup[0]+=df.loc[tup[1],"token"]+" "
         tup[1]+=1
-    if(df.loc[tup[1],"token"]!="<inaudible>"):
+    if(df.loc[tup[1],"token"]!="<inaudible>" and df.loc[tup[1],"filler"]==0):
         tup[0] += df.loc[tup[1],"token"]
     return tup #return reparandum and index number
 #generate per ID statistics on minimum edit distance between reparandums and repairs, also counts false starts, exports in tsv (wip)
