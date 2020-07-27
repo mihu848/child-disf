@@ -110,7 +110,7 @@ def rep_rate(t1, name):
         rate.append(count/tot)
         x+=1
     df = pd.DataFrame(list(zip(tags,disfct,rate,totct)),
-                      columns = ["filename", "repairsegs", "reprate", "tokens"])
+                       columns = ["filename", "repairsegs", "reprate", "tokens"])
     outfile = name + ".tsv"
     df.to_csv(outfile, sep="\t", index=False)
 
@@ -145,17 +145,70 @@ def graph(t1,a1,a2,x_label="x",y_label="y"):
     plt.title(y_label+" vs. "+x_label)
     slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
     predict_y = intercept + slope * x
-  #  p=np.polyfit(x,y,2)
-  #  f=np.poly1d(p)
- #   plt.plot(x,f(x), color="blue")
     plt.plot(x,predict_y, color = "red")
-    plt.plot(x, y, 'o', color='black')
+    plt.plot(x, y, 'o', color='blue')
     print("Linear R Value: " + str(r_value))
-    
-#generate per ID statistics on minimum edit distance between reparandums and repairs
+
+#function to return minimum edit distance
+def med(x,y):
+    return minedit.WagnerFischer(x,y).cost
+
+#parse reparandums
+def parse_repar(t1, x):
+    df=pd.read_csv(t1, sep='\t')
+    tup = ["", x]
+    while(df.loc[tup[1],"boundary"] != "+"):
+        tup[0]+=df.loc[tup[1],"token"]+" "
+        tup[1]+=1
+    tup[0] += df.loc[tup[1],"token"]
+    print(tup)
+    return tup
+
+#generate per ID statistics on minimum edit distance between reparandums and repairs, also counts false starts, exports in tsv (wip)
 def min_edit(t1):
     df = pd.read_csv(t1, sep='\t')
-    
-    x="Asd"
-    y="Asdsd"
-    return minedit.WagnerFischer(x,y).cost
+    tags = []
+    disf = []
+    rep = []
+    med_v = []
+    fs = []
+    for x in range(len(df)):
+        repar=""
+        repair=""
+        if(df.loc[x,"disf"]==1): #catch reparandum
+            tup=parse_repar(t1,x)
+            repar=tup[0]
+            x=tup[1]
+            if(df.loc[x+1,"level"]==0): #false start
+                tags.append(df.loc[x,"filename"])
+                disf.append(repar)
+                rep.append("x")
+                med_v.append("-1")
+                fs.append("yes")
+            elif(df.loc[x+1,"disf"]==1):#multiple repairs in a row
+                tup = parse_repar(t1,x+1)
+                repair = tup[0]
+                disf.append(repar)
+                rep.append(repair)
+                med_v.append(med(repar,repair))
+                fs.append("no")
+                #x-=1
+            elif(df.loc[x+1,"disf"]==0): #one reparandum one repair
+                while(df.loc[x,"level"] != 0):
+                    repair+=df.loc[x,"token"]+" "
+                    x+=1
+                repair+= df.loc[x,"token"]
+                disf.append(repar)
+                rep.append(repair)
+                med_v.append(med(repar,repair))
+                fs.append("no")
+                
+    fin = pd.DataFrame(list(zip(tags,disf,rep,med_v,fs)),
+                       columns = ["filename", "reparandum", "repair", "minedit","false start"])
+    fin.to_csv("minimumedit.tsv", sep="\t", index=False)
+            
+            
+            
+            
+            
+            
