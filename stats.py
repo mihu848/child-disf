@@ -77,9 +77,6 @@ def disf_rate(t1, name):
     df.to_csv(outfile, sep="\t", index=False)
 
 
-#compare reparandum length to repair length
-
-
 #percentage of tokens involved in repair
 def rep_rate(t1, name):
     first = pd.read_csv(t1, sep='\t')
@@ -157,13 +154,24 @@ def med(x,y):
 def parse_repar(t1, x):
     df=pd.read_csv(t1, sep='\t')
     tup = ["", x]
-    while(df.loc[tup[1],"boundary"] != "+"):
-        tup[0]+=df.loc[tup[1],"token"]+" "
+    while(df.loc[tup[1],"boundary"] != "+" and df.loc[tup[1],"boundary"] != "+_/" and df.loc[tup[1],"boundary"] != "+_//"):
+        if(df.loc[tup[1],"token"]!="<inaudible>"):
+            tup[0]+=df.loc[tup[1],"token"]+" "
         tup[1]+=1
-    tup[0] += df.loc[tup[1],"token"]
-    print(tup)
-    return tup
+    if(df.loc[tup[1],"token"]!="<inaudible>"):
+        tup[0] += df.loc[tup[1],"token"]
+    return tup #return reparandum and index number
 
+def parse_repair(t1,x):
+    df=pd.read_csv(t1, sep='\t')
+    tup = ["", x]
+    while(df.loc[tup[1]+1,"level"] != 0):
+        if(df.loc[tup[1],"token"]!="<inaudible>"):
+            tup[0]+=df.loc[tup[1],"token"]+" "
+        tup[1]+=1
+    if(df.loc[tup[1],"token"]!="<inaudible>"):
+        tup[0] += df.loc[tup[1],"token"]
+    return tup #return reparandum and index number
 #generate per ID statistics on minimum edit distance between reparandums and repairs, also counts false starts, exports in tsv (wip)
 def min_edit(t1):
     df = pd.read_csv(t1, sep='\t')
@@ -172,7 +180,9 @@ def min_edit(t1):
     rep = []
     med_v = []
     fs = []
-    for x in range(len(df)):
+    tok = []
+    x=0
+    while (x < len(df)):
         repar=""
         repair=""
         if(df.loc[x,"disf"]==1): #catch reparandum
@@ -182,29 +192,37 @@ def min_edit(t1):
             if(df.loc[x+1,"level"]==0): #false start
                 tags.append(df.loc[x,"filename"])
                 disf.append(repar)
-                rep.append("x")
+                rep.append("0")
                 med_v.append("-1")
                 fs.append("yes")
+                tok.append(x)
+                x+=1
             elif(df.loc[x+1,"disf"]==1):#multiple repairs in a row
+                tags.append(df.loc[x,"filename"])
                 tup = parse_repar(t1,x+1)
                 repair = tup[0]
                 disf.append(repar)
                 rep.append(repair)
                 med_v.append(med(repar,repair))
                 fs.append("no")
-                #x-=1
+                tok.append(x)
+                x+=1
             elif(df.loc[x+1,"disf"]==0): #one reparandum one repair
-                while(df.loc[x,"level"] != 0):
-                    repair+=df.loc[x,"token"]+" "
-                    x+=1
-                repair+= df.loc[x,"token"]
+                tags.append(df.loc[x,"filename"])
+                tup = parse_repair(t1, x+1)
+                repair=tup[0]
+                x=tup[1]
                 disf.append(repar)
                 rep.append(repair)
                 med_v.append(med(repar,repair))
                 fs.append("no")
-                
-    fin = pd.DataFrame(list(zip(tags,disf,rep,med_v,fs)),
-                       columns = ["filename", "reparandum", "repair", "minedit","false start"])
+                tok.append(x)
+                x+=1
+        else:
+            x+=1
+            
+    fin = pd.DataFrame(list(zip(tags,disf,rep,med_v,fs,tok)),
+                       columns = ["filename", "reparandum", "repair", "minedit","false start","token number"])
     fin.to_csv("minimumedit.tsv", sep="\t", index=False)
             
             
