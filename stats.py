@@ -172,6 +172,7 @@ def parse_repair(t1,x):
     if(df.loc[tup[1],"token"]!="<inaudible>" and df.loc[tup[1],"filler"]==0):
         tup[0] += df.loc[tup[1],"token"]
     return tup #return reparandum and index number
+
 #generate per ID statistics on minimum edit distance between reparandums and repairs, also counts false starts, exports in tsv (wip)
 def min_edit(t1):
     df = pd.read_csv(t1, sep='\t')
@@ -225,7 +226,60 @@ def min_edit(t1):
                        columns = ["filename", "reparandum", "repair", "minedit","false start","token number"])
     fin.to_csv("minimumedit.tsv", sep="\t", index=False)
             
+#exports csv with minimum edit/repair data
+def med_rates(t1, name):
+    first = pd.read_csv(t1, sep='\t')
+    x=0
+    tags = []
+    fsct = []
+    repeats = []
+    avg_norep = []
+    avg_wrep = []
+    #for x in range(len(first)):
+    while(x<len(first)):
+        key = first.loc[x, "filename"]
+        fs = 0
+        min_tot = 0 #number of cases with MED value (no false starts)
+        min_sum = 0 #sums up MED values
+        reps = 0 #repeats (MED = 0)
+        no_reps = 0 #count of MED cases without repeats 
+        while(x<len(first) and first.loc[x, "filename"]==key):
+            f=first.loc[x, "false start"]
+            m=first.loc[x,"minedit"]
+            if(f=="yes"):
+                fs+=1
+            else:
+                if(m==0):
+                    reps+=1
+                    min_tot+=1
+                else:
+                    min_sum+=m
+                    min_tot+=1
+                    no_reps+=1
+            x+=1
             
+        print(key)
+        tags.append(key)
+        print("False Starts: " + str(fs))
+        fsct.append(fs)
+        print("Repeats: " + str(reps))
+        repeats.append(reps)
+        if(min_tot!=0):
+            if(no_reps!=0):
+                print("Average Minimum Edit Distance without Repeats: " + str(min_sum/no_reps))
+                avg_norep.append(min_sum/no_reps)
+            else:
+                print("Average Minimum Edit Distance without Repeats: N/A")
+                avg_norep.append(-1)
+            print("Average Minimum Edit Distance with Repeats: " + str(min_sum/min_tot))
+            avg_wrep.append(min_sum/min_tot)
+        else:
+            avg_norep.append(-1)
+            avg_wrep.append(-1)
+    df = pd.DataFrame(list(zip(tags,fsct,repeats,avg_norep,avg_wrep)),
+                      columns = ["filename", "false starts", "repeats", "med avg (no repeats)", "med avg (with repeats)"])
+    outfile = name + ".tsv"
+    df.to_csv(outfile, sep="\t", index=False)        
             
             
             
